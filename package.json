@@ -9,9 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.2",
     "lowlight": "1.9.1",
     "react": "16.0.0",
     "react-dom": "16.0.0",
-    "react-syntax-highlighter": "5.7.0"
+    "react-syntax-highlighter": "5.7.0",
+    "webpack": "3.6.0"
   }
 }
