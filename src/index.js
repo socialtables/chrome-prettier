@@ -28,7 +28,7 @@ function highlightCode(mutations) {
 	) {
 		try {
 			const formatted = format(code.innerText);
-			const highlighted = renderToString(<SyntaxHighlighter style={docco} codeTagProps={{ style: { fontFamily: 'monospace' } }} language="javascript" data-react-syntax-highlighter="true">{formatted}</SyntaxHighlighter>);
+			const highlighted = renderToString(<SyntaxHighlighter style={docco} codeTagProps={{ style: { fontFamily: 'monospace', backgroundColor: 'transparent' } }} language="javascript" data-react-syntax-highlighter="true">{formatted}</SyntaxHighlighter>);
 			if (code.parentNode && code.parentNode.tagName === "PRE") {
 				code.parentNode.outerHTML = highlighted;
 			}  else {
