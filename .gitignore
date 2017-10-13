@@ -2,3 +2,4 @@ node_modules
 dist
 !dist/icon.png
 !dist/manifest.json
+web-ext-artifacts/
