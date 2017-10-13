@@ -12,7 +12,12 @@ window.addEventListener('unload', () => observer.disconnect());
 
 function highlightCode(mutations) {
 
-	if (mutations && mutations[0].addedNodes[0].dataset.reactSyntaxHighlighter) {
+	if (mutations
+		&& mutations[0]
+		&& mutations[0].addedNodes
+		&& mutations[0].addedNodes[0]
+		&& mutations[0].addedNodes[0].dataset
+		&& mutations[0].addedNodes[0].dataset.reactSyntaxHighlighter) {
 		return;
 	}
 	const codeTags = [...document.getElementsByTagName('code')];
