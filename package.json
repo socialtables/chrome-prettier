@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "build:firefox": "web-ext build -s dist/ -o"
   },
   "author": "",
   "license": "ISC",
@@ -19,5 +20,8 @@
     "react-dom": "16.0.0",
     "react-syntax-highlighter": "5.7.0",
     "webpack": "3.6.0"
+  },
+  "devDependencies": {
+    "web-ext": "^2.2.0"
   }
 }
