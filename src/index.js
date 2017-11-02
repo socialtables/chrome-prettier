@@ -5,7 +5,7 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import { highlightAuto } from "lowlight";
 import { docco } from "react-syntax-highlighter/dist/styles";
 
-const nodes = [];
+let nodes = [];
 let prevRequest = {};
 
 chrome.runtime.onMessage.addListener(
@@ -26,8 +26,7 @@ window.addEventListener('unload', () => {
 	unsubscribe();
 });
 
-function highlightCode(mutations, disabled = true) {
-	console.log('highlight code');
+function highlightCode(mutations, disabled = false) {
 	if ((mutations
 		&& mutations[0]
 		&& mutations[0].addedNodes
@@ -37,6 +36,7 @@ function highlightCode(mutations, disabled = true) {
 		|| disabled) {
 		return;
 	}
+	nodes = [];
 	const codeTags = [...document.getElementsByTagName('code')];
 	const lowlight = codeTags.forEach((code, index) => {
 	const { language, secondBest } = highlightAuto(code.innerText);
