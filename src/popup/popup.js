@@ -1,3 +1,5 @@
+import * as styles from "react-syntax-highlighter/dist/styles";
+
 function createElement(tagName, style = {}, props = {}, children = []) {
 	const element = document.createElement(tagName);
 	const styleKeys = Object.keys(style);
@@ -27,18 +29,36 @@ const toggleContainerStyle = {
 };
 
 function toggleDisabled() {
-	chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-		disabled = !disabled;
-		toggleContainer.style.justifyContent = disabled ? 'flex-end' : 'flex-start';
-		chrome.tabs.sendMessage(tabs[0].id, { disabled });
-	});
+	disabled = !disabled;
+	toggleContainer.style.justifyContent = disabled ? 'flex-end' : 'flex-start';
+	return { disabled };
 }
 
-const toggleText = createElement('div', {}, {}, ['disable']);
+function sendMessageToTab(getMessage) {
+	return function() {
+		chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+			const message = getMessage(...arguments);
+			chrome.tabs.sendMessage(tabs[0].id, message);
+		});
+	}
+}
 
-const toggleContainer = createElement('div', toggleContainerStyle, { onclick: toggleDisabled });
-document.getElementById('app').appendChild(toggleContainer)
-document.getElementById('app').appendChild(toggleText);
+const toggleTextStyle = {
+	boxSizing: 'border-box',
+	fontSize: '14px',
+	height: '24px',
+	paddingLeft: '10px',
+	paddingTop: '10px',
+};
+const toggleText = createElement('div', toggleTextStyle, {}, ['Disable']);
+const toggleRowStyle = {
+	display: 'flex',
+	justifyContent: 'space-between'
+};
+
+const toggleContainer = createElement('div', toggleContainerStyle, { onclick: sendMessageToTab(toggleDisabled) });
+const toggleRow = createElement('div', toggleRowStyle, {}, [toggleContainer, toggleText]);
+document.getElementById('app').appendChild(toggleRow)
 
 const toggleStyle = {
 	backgroundColor: '#8E354A',
@@ -49,3 +69,14 @@ const toggleStyle = {
 
 const toggle = createElement('div', toggleStyle);
 toggleContainer.appendChild(toggle);
+
+function changeSyntaxStyle(e) {
+	return { style: JSON.stringify(styles[e.target.value])}
+}
+
+const options = Object.keys(styles).map(style => {
+	return createElement('option', {}, { value: style }, [style])
+});
+
+const select = createElement('select', {}, { onchange: sendMessageToTab(changeSyntaxStyle) }, options);
+document.getElementById('app').appendChild(select);

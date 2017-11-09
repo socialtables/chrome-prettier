@@ -3,19 +3,26 @@ import { renderToString } from "react-dom/server";
 import { format } from "prettier";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { highlightAuto } from "lowlight";
-import { docco } from "react-syntax-highlighter/dist/styles";
+import docco from "react-syntax-highlighter/dist/styles/docco";
 
 let nodes = [];
 let prevRequest = {};
+let style = docco;
 
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
+	  console.log(request);
 	  if (request.disabled && request.disabled !== prevRequest.disabled) {
 		unhighlightCode();
+		prevRequest.disabled = request.disabled;
 	  } else if (!request.disabled && request.disabled !== prevRequest.disabled) {
 		highlightCode(null, false);
+		prevRequest.disabled = request.disabled;
+	  } else if (request.style && request.style !== prevRequest.style) {
+		prevRequest.style = request.style;
+		style = JSON.parse(request.style);
+		highlightCode(null, prevRequest.disabled)
 	  }
-	  prevRequest.disabled = request.disabled;
 });
 
 highlightCode();
@@ -36,9 +43,10 @@ function highlightCode(mutations, disabled = false) {
 		|| disabled) {
 		return;
 	}
+	console.log('after if', style);
 	nodes = [];
 	const codeTags = [...document.getElementsByTagName('code')];
-	const lowlight = codeTags.forEach((code, index) => {
+	codeTags.forEach((code, index) => {
 	const { language, secondBest } = highlightAuto(code.innerText);
 	const isLanguage = language && language === 'javascript';
 	const isSecondBestLanguage = secondBest && secondBest.language === 'javascript';
@@ -51,8 +59,8 @@ function highlightCode(mutations, disabled = false) {
 		try {
 			const formatted = format(code.innerText);
 			const id = Math.random();
-			const highlighted = renderToString(<SyntaxHighlighter style={docco} id={`react-syntax-highlghter-${id}`} codeTagProps={{ style: { fontFamily: 'monospace', backgroundColor: 'transparent' } }} language="javascript" data-react-syntax-highlighter="true">{formatted}</SyntaxHighlighter>);
-			
+			const highlighted = renderToString(<SyntaxHighlighter style={style} id={`react-syntax-highlghter-${id}`} codeTagProps={{ style: { fontFamily: 'monospace', backgroundColor: 'transparent' } }} language="javascript" data-react-syntax-highlighter="true">{formatted}</SyntaxHighlighter>);
+			console.log('highlighted', highlighted);
 			if (code.parentNode && code.parentNode.tagName === "PRE") {
 				const outerHTML = code.parentNode.outerHTML;
 				code.parentNode.outerHTML = highlighted;
