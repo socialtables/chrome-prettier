@@ -1,4 +1,4 @@
-import * as styles from "react-syntax-highlighter/dist/styles";
+import * as styles from "react-syntax-highlighter/src/styles/prism";
 
 let disabled = false;
 
@@ -52,6 +52,7 @@ const selectStyle = {
 	cursor: 'pointer',
 	height: '24px',
 	outline: 'none',
+	width: '150px',
 };
 
 function createElement(tagName, style = {}, props = {}, children = []) {
