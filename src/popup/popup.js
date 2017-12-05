@@ -6,6 +6,7 @@ const toggleContainerStyle = {
 	alignItems: 'center',
 	backgroundColor: '#FEDFE1',
 	borderRadius: '4px',
+	border: '1px solid #8E354A',	
 	cursor: 'pointer',
 	display: 'flex',
 	height: '24px',
@@ -15,12 +16,12 @@ const toggleContainerStyle = {
 
 const disableTextStyle = {
 	fontSize: '14px',
-	lineHeight: '24px',
+	lineHeight: '26px',
 	marginLeft: '10px',
 };
 
 const toggleRowStyle = {
-	color: '#8E354A',
+	color: '#434343',
 	display: 'flex',
 	justifyContent: 'flex-start',
 	marginBottom: '12px',
@@ -28,25 +29,29 @@ const toggleRowStyle = {
 
 const toggleStyle = {
 	backgroundColor: '#8E354A',
-	borderRadius: '4px 0 0 4px',
 	height: '24px',
 	width: '50%',
 };
 
 const toggleLabelStyle = {
-	color: '#E16B8C',
+	color: '#B3435D',
 	fontWeight: '500',
 	textAlign: 'center',
 	width: '50%',
 };
 
 const headerStyle = {
-	color: '#8E354A',
+	color: '#B3435D',
 	marginBottom: '12px',
 };
 
 const selectStyle = {
+	backgroundColor: '#FEF5F6',
+	border: '1px solid #FEEFEA',
+	color: '#434343',
+	cursor: 'pointer',
 	height: '24px',
+	outline: 'none',
 };
 
 function createElement(tagName, style = {}, props = {}, children = []) {
@@ -69,7 +74,6 @@ function createElement(tagName, style = {}, props = {}, children = []) {
 function toggleDisabled() {
 	disabled = !disabled;
 	toggleContainer.style.flexDirection = disabled ? 'row-reverse' : 'row';
-	toggle.style.borderRadius = disabled ? '0 4px 4px 0' : '4px 0 0 4px';
 	toggleLabel.innerHTML = disabled ? 'On' : 'Off';
 	return { disabled };
 }
@@ -103,9 +107,17 @@ const header = createElement('h3', headerStyle, {}, ['Chrome-prettier']);
 app.appendChild(header);
 app.appendChild(toggleRow);
 
+
+function formatLabel(labelName) {
+	const labelWithSpaces = labelName.replace(/[A-Z]/g, (match, offset, string) => ` ${match}`);
+	const capitalizedLabel = labelWithSpaces[0].toUpperCase().concat(labelWithSpaces.slice(1));
+	
+	return capitalizedLabel;
+}
+
 const styleOptions = Object.keys(styles).map(style => {
-	return createElement('option', {}, { value: style }, [style])
+	return createElement('option', {}, { value: style }, [formatLabel(style)])
 });
 
-const select = createElement('select', {}, { onchange: sendMessageToTab(changeSyntaxStyle) }, styleOptions);
+const select = createElement('select', selectStyle, { onchange: sendMessageToTab(changeSyntaxStyle) }, styleOptions);
 app.appendChild(select);
